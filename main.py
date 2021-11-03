@@ -2,14 +2,10 @@ import json
 import os
 import requests
 from io import BytesIO
-# To install this module, run:
-# python -m pip install Pillow
 from PIL import Image, ImageDraw, ImageFont
 from azure.cognitiveservices.vision.face import FaceClient
 from msrest.authentication import CognitiveServicesCredentials
-from azure.cognitiveservices.vision.face.models import TrainingStatusType, Person, FaceAttributeType
-
-# This key will serve all examples in this document.
+from azure.cognitiveservices.vision.face.models import FaceAttributeType
 
 KEY = "b06e373b24034716a22c1038926bced0"
 # This endpoint will be used in all examples in this quickstart.
