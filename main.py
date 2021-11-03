@@ -1,3 +1,4 @@
+import io
 import json
 import os
 import requests
@@ -13,15 +14,21 @@ ENDPOINT = "https://apifaceemotion.cognitiveservices.azure.com/"
 face_client = FaceClient(ENDPOINT, CognitiveServicesCredentials(KEY))
 
 # Detect a face in an image that contains a single face
-single_face_image_url = 'https://cdn.searchenginejournal.com/wp-content/uploads/2019/07/google-to-capture-and-learn-about-our-emotions-on-a-smartphone-camera.png'
-single_image_name = os.path.basename(single_face_image_url)
+
+# este codigo es el que estaba antes
+# single_face_image_url = 'https://cdn.searchenginejournal.com/wp-content/uploads/2019/07/google-to-capture-and-learn-about-our-emotions-on-a-smartphone-camera.png'
+# single_image_name = os.path.basename(single_face_image_url)
 # We use detection model 3 to get better performance.
-detected_faces = face_client.face.detect_with_url(url=single_face_image_url, detection_model='detection_01',
-                                                  return_face_attributes=[FaceAttributeType.emotion,
-                                                                          FaceAttributeType.gender])
+img = Image.open("images\\emotions\\people.png")
+output = io.BytesIO()
+img.save(output, format='JPEG')  # or another format
+output.seek(0)
+detected_faces = face_client.face.detect_with_stream(image=output, detection_model='detection_01',
+                                                     return_face_attributes=[FaceAttributeType.emotion,
+                                                                             FaceAttributeType.gender])
 
 if not detected_faces:
-    raise Exception('No face detected from image {}'.format(single_image_name))
+    raise Exception('No face detected from image {}'.format(img))
 
 
 # Convert width height to a point in a rectangle
@@ -37,9 +44,9 @@ def getRectangle(face_dictionary):
 
 def drawFaceRectangles():
     # Download the image from the url
-    response = requests.get(single_face_image_url)
-
-    img = Image.open(BytesIO(response.content))
+    # response = requests.get(single_face_image_url)
+    global img
+    # img2 = Image.open("images\\emotions\\people.png")
 
     # For each face returned use the face rectangle and draw a red box.
     print('Drawing rectangle around face... see popup for results.')
@@ -61,7 +68,7 @@ def drawFaceRectangles():
                 draw.text((dimensions[0][0], y), emotion, align="left", font=font, fill="yellow")
                 y += 12
 
-    img.save("C:\\Users\\andre\\Desktop\\maeFeliz2.jpg")
+    img.save("results\\emotionsResults\\resultado.png")
     # Display the image in the default image browser.
     img.show()
 
