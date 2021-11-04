@@ -1,32 +1,25 @@
 import io
 import json
-import os
-import requests
-from io import BytesIO
 from PIL import Image, ImageDraw, ImageFont
 from azure.cognitiveservices.vision.face import FaceClient
 from msrest.authentication import CognitiveServicesCredentials
 from azure.cognitiveservices.vision.face.models import FaceAttributeType
 
+# Access key for azure cognitives services and endpoint to get access to acs.
 KEY = "b06e373b24034716a22c1038926bced0"
-# This endpoint will be used in all examples in this quickstart.
 ENDPOINT = "https://apifaceemotion.cognitiveservices.azure.com/"
+# Authentication with FaceClient.
 face_client = FaceClient(ENDPOINT, CognitiveServicesCredentials(KEY))
-
-# Detect a face in an image that contains a single face
-
-# este codigo es el que estaba antes
-# single_face_image_url = 'https://cdn.searchenginejournal.com/wp-content/uploads/2019/07/google-to-capture-and-learn-about-our-emotions-on-a-smartphone-camera.png'
-# single_image_name = os.path.basename(single_face_image_url)
-# We use detection model 3 to get better performance.
+# Path from image to analyze.
 img = Image.open("images\\emotions\\people.png")
+# Output let us to detect an image from a folder.
 output = io.BytesIO()
 img.save(output, format='JPEG')  # or another format
 output.seek(0)
-detected_faces = face_client.face.detect_with_stream(image=output, detection_model='detection_01',
-                                                     return_face_attributes=[FaceAttributeType.emotion,
-                                                                             FaceAttributeType.gender])
 
+# Analyze the image with azure.
+detected_faces = face_client.face.detect_with_stream(image=output, detection_model='detection_01',
+                                                     return_face_attributes=[FaceAttributeType.emotion,                                                                             FaceAttributeType.gender])
 if not detected_faces:
     raise Exception('No face detected from image {}'.format(img))
 
@@ -43,22 +36,16 @@ def getRectangle(face_dictionary):
 
 
 def drawFaceRectangles():
-    # Download the image from the url
-    # response = requests.get(single_face_image_url)
+    # Set img globally
     global img
-    # img2 = Image.open("images\\emotions\\people.png")
-
     # For each face returned use the face rectangle and draw a red box.
     print('Drawing rectangle around face... see popup for results.')
     draw = ImageDraw.Draw(img)
     for face in detected_faces:
         dimensions = getRectangle(face)
         y = dimensions[0][1]
-
         draw.rectangle(dimensions, outline='white')
-
         emotion_json = json.loads(json.dumps(face.face_attributes.emotion.__dict__))
-
         del emotion_json['additional_properties']
         font = ImageFont.truetype("resources/Roboto-Bold.ttf", 12)
         draw.text((dimensions[0][0], y), face.face_attributes.gender.upper(), align="left", font=font, fill="red")
@@ -67,7 +54,7 @@ def drawFaceRectangles():
             if emotion_json[emotion] != 0.0:
                 draw.text((dimensions[0][0], y), emotion, align="left", font=font, fill="yellow")
                 y += 12
-
+    # Save the img in a folder.
     img.save("results\\emotionsResults\\resultado.png")
     # Display the image in the default image browser.
     img.show()
