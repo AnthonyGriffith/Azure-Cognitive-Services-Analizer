@@ -11,7 +11,7 @@ ENDPOINT = "https://apifaceemotion.cognitiveservices.azure.com/"
 # Authentication with FaceClient.
 face_client = FaceClient(ENDPOINT, CognitiveServicesCredentials(KEY))
 # Path from image to analyze.
-img = Image.open("images\\emotions\\people.png")
+img = Image.open("media/images\\people.png")
 # Output let us to detect an image from a folder.
 output = io.BytesIO()
 img.save(output, format='JPEG')  # or another format
