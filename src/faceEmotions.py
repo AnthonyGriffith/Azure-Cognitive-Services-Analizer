@@ -3,7 +3,13 @@ import json
 import os
 from PIL import Image, ImageDraw, ImageFont
 from azure.cognitiveservices.vision.face.models import FaceAttributeType
-from src.services import getFaceClient
+from msrest.authentication import CognitiveServicesCredentials
+from azure.cognitiveservices.vision.face import FaceClient
+
+key = "b06e373b24034716a22c1038926bced0"
+endpoint = "https://apifaceemotion.cognitiveservices.azure.com/"
+# Authentication with FaceClient.
+face_client = FaceClient(endpoint, CognitiveServicesCredentials(key))
 
 
 # Convert width height to a point in a rectangle
@@ -54,9 +60,9 @@ def startAnalyzeEmotions():
         output.seek(0)
 
         # Analyze the image with azure.
-        detected_faces = getFaceClient().face.detect_with_stream(image=output, detection_model='detection_01',
-                                                                 return_face_attributes=[FaceAttributeType.emotion,
-                                                                                         FaceAttributeType.gender])
+        detected_faces = face_client.face.detect_with_stream(image=output, detection_model='detection_01',
+                                                             return_face_attributes=[FaceAttributeType.emotion,
+                                                                                     FaceAttributeType.gender])
         if not detected_faces:
             raise Exception('No face detected from image {}'.format(img))
 

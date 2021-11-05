@@ -1,8 +1,12 @@
 import os
-from src.services import getTextAnalyticsClient
+from azure.core.credentials import AzureKeyCredential
+from azure.ai.textanalytics import TextAnalyticsClient
+
+
 # Global variables
-
-
+credential = AzureKeyCredential("ef2f87788e5647a19b14cae72ad4f899")
+endpoint = "https://textsentimental.cognitiveservices.azure.com/"
+text_analytics_client = TextAnalyticsClient(endpoint, credential)
 TEXTS_PATH = "../media/texts/"
 
 
@@ -33,7 +37,7 @@ if __name__ == "__main__":
     documents = analyze_folder(TEXTS_PATH)
 
     # Api call for the text analysis
-    response = getTextAnalyticsClient().analyze_sentiment(documents, language="en")
+    response = text_analytics_client.analyze_sentiment(documents, language="en")
     result = [doc for doc in response if not doc.is_error]
 
     # Showing results
