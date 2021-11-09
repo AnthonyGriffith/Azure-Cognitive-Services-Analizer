@@ -1,6 +1,9 @@
+import datetime
 import io
 import json
 import os
+import threading
+
 from PIL import Image, ImageDraw, ImageFont
 from azure.cognitiveservices.vision.face.models import FaceAttributeType
 from msrest.authentication import CognitiveServicesCredentials
@@ -10,6 +13,7 @@ key = "b06e373b24034716a22c1038926bced0"
 endpoint = "https://apifaceemotion.cognitiveservices.azure.com/"
 # Authentication with FaceClient.
 face_client = FaceClient(endpoint, CognitiveServicesCredentials(key))
+IMAGES_PATH = "../media/images"
 
 
 # Convert width height to a point in a rectangle
@@ -23,7 +27,7 @@ def getRectangle(face_dictionary):
     return (left, top), (right, bottom)
 
 
-def drawFaceRectangles(img, detected_faces, image_num):
+def drawFaceRectangles(img, detected_faces, name):
     # For each face returned use the face rectangle and draw a red box.
     print('Drawing rectangle around face... see popup for results.')
     draw = ImageDraw.Draw(img)
@@ -41,18 +45,17 @@ def drawFaceRectangles(img, detected_faces, image_num):
                 draw.text((dimensions[0][0], y), emotion, align="left", font=font, fill="yellow")
                 y += 12
     # Save the img in a folder.
-    img.save("../results\\emotionsResults\\resultado" + str(image_num) + ".png")
+    name_split = name.split(".")
+    img.save("../results\\emotionsResults\\resultado_" + name_split[0] + ".png")
     # Display the image in the default image browser.
     img.show()
 
 
-def startAnalyzeEmotions():
+def startAnalyzeEmotions(files):
     # Path from image to analyze.
-    images_path = "../media/images"
-    files = os.listdir(images_path)
-    image_num = 0
+
     for f in files:
-        img = Image.open('{0}/{1}'.format(images_path, f))
+        img = Image.open('{0}/{1}'.format(IMAGES_PATH, f))
 
         # Output let us to detect an image from a folder.
         output = io.BytesIO()
@@ -66,10 +69,32 @@ def startAnalyzeEmotions():
         if not detected_faces:
             raise Exception('No face detected from image {}'.format(img))
 
-        image_num += 1
         # Uncomment this to show the face rectangles.
-        drawFaceRectangles(img, detected_faces, image_num)
+        drawFaceRectangles(img, detected_faces, f)
 
 
 if __name__ == "__main__":
-    startAnalyzeEmotions()
+
+    start_time = datetime.datetime.now()
+    files = os.listdir(IMAGES_PATH)
+    print(len(files))
+    if len(files) >= 4:
+        lista1 = []
+        lista2 = []
+        for i in range(len(files)):
+            if i % 2 == 0:
+                lista1.append(files[i])
+            else:
+                lista2.append(files[i])
+        thread1 = threading.Thread(target=startAnalyzeEmotions, args=(lista1,))
+        thread2 = threading.Thread(target=startAnalyzeEmotions, args=(lista2,))
+        thread1.start()
+        thread2.start()
+
+        thread1.join()
+        thread2.join()
+    # Api call for the text analysis
+    else:
+        startAnalyzeEmotions(files)
+    end_time = datetime.datetime.now()
+    print('Duration: {}'.format(end_time - start_time))
