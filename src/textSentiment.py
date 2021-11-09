@@ -52,7 +52,7 @@ if __name__ == "__main__":
     start_time = datetime.datetime.now()
     documents = analyze_folder(TEXTS_PATH)
     print(len(documents))
-    if len(documents) > 8:
+    if len(documents) >= 8:
         lista1 = []
         lista2 = []
         for i in range(len(documents)):

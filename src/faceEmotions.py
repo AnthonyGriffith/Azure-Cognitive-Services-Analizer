@@ -10,7 +10,7 @@ from msrest.authentication import CognitiveServicesCredentials
 from azure.cognitiveservices.vision.face import FaceClient
 
 key = "<ENTER KEY>"
-endpoint = "<ENTER ENDPONIT>"
+endpoint = "<ENTER ENDPOINT>"
 # Authentication with FaceClient.
 face_client = FaceClient(endpoint, CognitiveServicesCredentials(key))
 IMAGES_PATH = "../media/images"
