@@ -52,7 +52,7 @@ pip install Pillow
 key = "<ENTER KEY>"
 endpoint = "<ENTER ENDPONIT>"
 ```
-5: Para poder usar las herramientas de TextAnalytics, es necesario poder las credenciales de Azure, y ponerlo en el archivo tetxSentiment.py.
+5: Para poder usar las herramientas de TextAnalytics, es necesario poder las credenciales de Azure, y ponerlo en el archivo textSentiment.py.
 ```
 credential = AzureKeyCredential("<ENTER KEY>")
 endpoint = "<ENTER ENDPONIT>"
