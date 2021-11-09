@@ -7,8 +7,9 @@ from azure.core.credentials import AzureKeyCredential
 from azure.ai.textanalytics import TextAnalyticsClient
 
 # Global variables
-credential = AzureKeyCredential("ef2f87788e5647a19b14cae72ad4f899")
-endpoint = "https://textsentimental.cognitiveservices.azure.com/"
+
+credential = AzureKeyCredential("<ENTER KEY>")
+endpoint = "<ENTER ENDPONIT>"
 text_analytics_client = TextAnalyticsClient(endpoint, credential)
 TEXTS_PATH = "../media/texts/"
 

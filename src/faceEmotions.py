@@ -9,8 +9,8 @@ from azure.cognitiveservices.vision.face.models import FaceAttributeType
 from msrest.authentication import CognitiveServicesCredentials
 from azure.cognitiveservices.vision.face import FaceClient
 
-key = "b06e373b24034716a22c1038926bced0"
-endpoint = "https://apifaceemotion.cognitiveservices.azure.com/"
+key = "<ENTER KEY>"
+endpoint = "<ENTER ENDPONIT>"
 # Authentication with FaceClient.
 face_client = FaceClient(endpoint, CognitiveServicesCredentials(key))
 IMAGES_PATH = "../media/images"
